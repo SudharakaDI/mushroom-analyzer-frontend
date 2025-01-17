@@ -1,26 +1,33 @@
 import PotStockCard from "../components/PotStockCard.jsx";
 import Grid from '@mui/material/Grid2';
 import "../css/Home.css";
+import axios from "axios";
+import {useEffect, useState} from "react";
+
+const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/pot-stock";
 
 function Home(){
+    const [potStocks, setPotStocks] = useState([]);
+
+    useEffect(() => {
+        axios.get(baseURL).then((response) => {
+            setPotStocks(response.data);
+        })
+        },[]);
+
+    console.log(potStocks);
+
 
     return (
         <div className="home">
-            <Grid className=""container spacing={2}>
-                <Grid >
-                    <PotStockCard name='Pot Stock 1' potCount={1000} supplier='Kakulondara'/>
-                </Grid>
-                <Grid >
-                    <PotStockCard name='Pot Stock 2' potCount={1250} supplier='Kakulondara'/>
-                </Grid>
+            <Grid container spacing={2}>
+                {potStocks && potStocks.map((potStock) => (
+                    <Grid key={potStock.id}>
+                        <PotStockCard name={potStock.mushroomType} potCount={potStock.numberOfPots} supplier={potStock.mushroomSupplier.name}/>
+                    </Grid>
+                ))}
 
-                <Grid >
-                    <PotStockCard name='Pot Stock 2' potCount={1250} supplier='Kakulondara'/>
-                </Grid>
             </Grid>
-
-
-
         </div>
 
     );

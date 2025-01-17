@@ -1,0 +1,9 @@
+.sales {
+    padding: 2rem 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sales-table {
+    max-width: 40%;
+}
