@@ -6,47 +6,26 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Production.css';
+import {useEffect, useState} from "react";
+import axios from "axios";
+import ExpandableProductionTable from "../components/ExpandableProductionTable.jsx";
 
-function createData(date,numberOfItems) {
-    return {date,numberOfItems};
-}
-
-const rows = [
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-
-];
+const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/production";
 
 function Production() {
+
+    const [production, setProduction] = useState([]);
+
+    useEffect(() => {
+        axios.get(baseURL).then((response) => {
+            setProduction(response.data);
+        })
+    },[]);
+
     return (
         <div className="production">
             <h1>Productions</h1>
-            <TableContainer component={Paper} className="production-table">
-                <Table sx={{ minWidth:200 }} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Date</TableCell>
-                            <TableCell align="right">Number of items</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow
-                                key={row.date}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {row.date}
-                                </TableCell>
-                                <TableCell align="right">{row.numberOfItems}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <ExpandableProductionTable/>
         </div>
 
     )

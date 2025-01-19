@@ -6,22 +6,21 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Income.css';
+import {useEffect, useState} from "react";
+import axios from "axios";
 
-function createData(date, amount) {
-    return {date,amount};
-}
+const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/income";
 
-const rows = [
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-    createData('2025.01.01', 50),
-
-];
 
 function Income() {
+    
+    const [income, setIncome] = useState([]);
+
+    useEffect(() => {
+        axios.get(baseURL).then((response) => {
+            setIncome(response.data);
+        })
+    },[]);
     return (
         <div className="income">
             <h1>Income</h1>
@@ -34,7 +33,7 @@ function Income() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {income.map((row) => (
                             <TableRow
                                 key={row.date}
                             >

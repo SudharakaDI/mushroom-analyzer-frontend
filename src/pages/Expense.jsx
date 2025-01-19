@@ -6,20 +6,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Expense.css';
+import {useEffect, useState} from "react";
+import axios from "axios";
 
-function createData(date, description, stakeHolder, amount) {
-    return {date, description, stakeHolder, amount};
-}
-
-const rows = [
-    createData('2025.01.01', 'Selling Fee', 'Saumasiri', 50),
-    createData('2025.01.01', 'Selling Fee', 'Saumasiri', 50),
-    createData('2025.01.01', 'Selling Fee', 'Saumasiri', 50),
-    createData('2025.01.01', 'Selling Fee', 'Saumasiri', 50),
-
-];
+const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/expense";
 
 function Expense() {
+
+    const [expenses, setExpenses] = useState([]);
+
+    useEffect(() => {
+        axios.get(baseURL).then((response) => {
+            setExpenses(response.data);
+        })
+    },[]);
     return (
         <div className="expense">
             <h1>Expense</h1>
@@ -29,21 +29,21 @@ function Expense() {
                         <TableRow>
                             <TableCell>Date</TableCell>
                             <TableCell>Description</TableCell>
-                            <TableCell>Stake Holder</TableCell>
+                            <TableCell>Expense Type</TableCell>
                             <TableCell align="right">Amount</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {expenses.map((expense) => (
                             <TableRow
-                                key={row.date}
+                                key={expense.id}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.date}
+                                    {expense.date}
                                 </TableCell>
-                                <TableCell >{row.description}</TableCell>
-                                <TableCell >{row.stakeHolder}</TableCell>
-                                <TableCell align="right">{row.amount}</TableCell>
+                                <TableCell >{expense.description}</TableCell>
+                                <TableCell >{expense.type}</TableCell>
+                                <TableCell align="right">{expense.amount}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

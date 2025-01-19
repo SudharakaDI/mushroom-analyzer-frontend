@@ -6,21 +6,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Sales.css';
+import {useEffect, useState} from "react";
+import axios from "axios";
 
-function createData(date, seller, numberOfItems) {
-    return {date, seller,numberOfItems};
-}
-
-const rows = [
-    createData('2025.01.01', 'Saumasiri', 50),
-    createData('2025.01.01', 'Saumasiri', 50),
-    createData('2025.01.01', 'Saumasiri', 50),
-    createData('2025.01.01', 'Saumasiri', 50),
-    createData('2025.01.01', 'Saumasiri', 50),
-
-];
+const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/sales";
 
 function Sales() {
+
+    const [sales, setSales] = useState([]);
+
+    useEffect(() => {
+        axios.get(baseURL).then((response) => {
+            setSales(response.data);
+        })
+    },[]);
     return (
         <div className="sales">
             <h1>Sales</h1>
@@ -34,15 +33,15 @@ function Sales() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {sales.map((sale) => (
                             <TableRow
-                                key={row.date}
+                                key={sale.id}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.date}
+                                    {sale.date}
                                 </TableCell>
-                                <TableCell >{row.seller}</TableCell>
-                                <TableCell align="right">{row.numberOfItems}</TableCell>
+                                <TableCell >{sale.seller.name}</TableCell>
+                                <TableCell align="right">{sale.numberOfItems}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

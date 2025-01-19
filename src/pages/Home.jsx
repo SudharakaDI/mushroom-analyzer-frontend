@@ -15,7 +15,6 @@ function Home(){
         })
         },[]);
 
-    console.log(potStocks);
 
 
     return (
