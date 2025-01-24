@@ -11,7 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
-import backendClient from "../services/api.js";
+import {addNewOperationalExpense} from "../services/apiService.js";
 
 
 export default function ExpenseDialog({open, onClose, salesId}) {
@@ -20,11 +20,14 @@ export default function ExpenseDialog({open, onClose, salesId}) {
     const [amount, setAmount] = useState(null);
 
 
-    function addExpense(expense) {
-        backendClient.post(`/expense/operation/${salesId}`, expense)
-            .then((response) => {
-               console.log(response);
-            });
+    async function addExpense(expense) {
+        try {
+            const response = await addNewOperationalExpense(salesId, expense);
+            console.log(response);
+
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (

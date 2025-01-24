@@ -7,19 +7,25 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Expense.css';
 import {useEffect, useState} from "react";
-import axios from "axios";
+import {fetchExpenses} from "../services/apiService.js";
 
-const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/expense";
 
 function Expense() {
 
     const [expenses, setExpenses] = useState([]);
 
-    useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setExpenses(response.data);
-        })
+    useEffect( () => {
+        const loadExpense = async () => {
+            try {
+                const expenseData = await fetchExpenses();
+                setExpenses(expenseData);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadExpense();
     },[]);
+
     return (
         <div className="expense">
             <h1>Expense</h1>

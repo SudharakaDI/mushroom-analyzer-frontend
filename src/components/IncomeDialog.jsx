@@ -10,9 +10,8 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import axios from "axios";
 import dayjs from "dayjs";
-import backendClient from "../services/api.js";
+import {addNewIncome} from "../services/apiService.js";
 
 
 export default function IncomeDialog({open, onClose, salesId}) {
@@ -21,11 +20,14 @@ export default function IncomeDialog({open, onClose, salesId}) {
     const [amount, setAmount] = useState(null);
 
 
-    function addIncome(income) {
-        backendClient.post(`/income?salesId=${salesId}`, income)
-            .then((response) => {
-               console.log(response);
-            });
+    async function addIncome(income) {
+        try {
+            const response = await addNewIncome(salesId, income);
+            console.log(response);
+
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (

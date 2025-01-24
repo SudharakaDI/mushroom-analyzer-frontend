@@ -7,12 +7,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {useEffect, useState} from "react";
 import Row from './ExpandableProductionTableRow.jsx';
-import backendClient from "../services/api.js";
+import { fetchProductions, fetchSellers} from "../services/apiService.js";
 
 export default function ExpandableProductionTable() {
 
     const [productions, setProductions] = useState([]);
     const [sellers, setSellers] = useState([]);
+
 
     useEffect(() => {
         loadProductions();
@@ -22,16 +23,14 @@ export default function ExpandableProductionTable() {
         loadSellers();
     },[]);
 
-    const loadProductions = () => {
-        backendClient.get('/production').then((response) => {
-            setProductions(response.data);
-        })
+    const loadProductions = async () => {
+        const data = await fetchProductions();
+        setProductions(data);
     }
 
-    const loadSellers = () => {
-        backendClient.get('/sales/sellers').then((response) => {
-            setSellers(response.data);
-        });
+    const loadSellers = async () => {
+        const data = await fetchSellers();
+        setSellers(data);
     }
 
     return (
@@ -50,7 +49,7 @@ export default function ExpandableProductionTable() {
                     ))}
                 </TableBody>
             </Table>
-
+``
         </TableContainer>
     );
 }

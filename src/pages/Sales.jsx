@@ -7,19 +7,25 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Sales.css';
 import {useEffect, useState} from "react";
-import axios from "axios";
+import {fetchSales} from "../services/apiService.js";
 
-const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/sales";
 
 function Sales() {
 
     const [sales, setSales] = useState([]);
 
-    useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setSales(response.data);
-        })
+    useEffect( () => {
+        const loadSales = async () => {
+            try {
+                const salesData = await fetchSales();
+                setSales(salesData);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadSales();
     },[]);
+
     return (
         <div className="sales">
             <h1>Sales</h1>

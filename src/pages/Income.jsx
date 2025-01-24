@@ -7,20 +7,24 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import '../css/Income.css';
 import {useEffect, useState} from "react";
-import axios from "axios";
-
-const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/income";
-
+import {fetchIncomes,} from "../services/apiService.js";
 
 function Income() {
     
     const [income, setIncome] = useState([]);
 
-    useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setIncome(response.data);
-        })
+    useEffect( () => {
+        const loadIncome = async () => {
+            try {
+                const incomeData = await fetchIncomes();
+                setIncome(incomeData);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadIncome();
     },[]);
+
     return (
         <div className="income">
             <h1>Income</h1>

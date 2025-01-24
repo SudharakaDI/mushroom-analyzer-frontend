@@ -10,21 +10,22 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import axios from "axios";
 import dayjs from "dayjs";
+import {addNewProduction} from "../services/apiService.js";
 
-const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/production";
 
 export default function ProductionDialog({open, onClose}) {
     const [selectedDate, setSelectedDate] = useState(null);
     const [noOfItems, setNoOfItems] = useState(null);
 
-    function addProduction(production) {
-        axios
-            .post(`${baseURL}?potStockId=2`,production)
-            .then((response) => {
-               console.log(response);
-            });
+    async function addProduction(production) {
+        try {
+            const response = await addNewProduction(2, production);
+            console.log(response);
+
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (

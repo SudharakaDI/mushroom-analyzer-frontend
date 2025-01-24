@@ -1,19 +1,23 @@
 import PotStockCard from "../components/PotStockCard.jsx";
 import Grid from '@mui/material/Grid2';
 import "../css/Home.css";
-import axios from "axios";
 import {useEffect, useState} from "react";
-
-const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/pot-stock";
+import {fetchPotStocks} from "../services/apiService.js";
 
 function Home(){
     const [potStocks, setPotStocks] = useState([]);
 
-    useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setPotStocks(response.data);
-        })
-        },[]);
+    useEffect( () => {
+        const loadPotStocks = async () => {
+            try {
+                const potStocks = await fetchPotStocks();
+                setPotStocks(potStocks);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadPotStocks();
+    },[]);
 
 
 

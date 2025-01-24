@@ -9,11 +9,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import axios from "axios";
-import backendClient from "../services/api.js";
 import {useState} from "react";
 import IncomeDialog from "./IncomeDialog.jsx";
 import ExpenseDialog from "./ExpenseDialog.jsx";
+import {addNewSale} from "../services/apiService.js";
 
 
 export default function SalesSubTable({sales, loadProductions, sellers, productionId}) {
@@ -23,8 +22,6 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
     const [selectedSalesId, setSelectedSalesId] = useState(null);
     const [incomedialogOpen, setIncomedialogOpen] = useState(false);
     const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
-
-    const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/sales";
 
 
     const handleIncomeDialogOpen = (salesId) => {
@@ -45,12 +42,15 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
         setExpenseDialogOpen(false);
     };
 
-    function addSales(sale) {
-        axios
-            .post(`${baseURL}?productionId=${productionId}`,sale)
-            .then((response) => {
-                console.log(response);
-            });
+    async function addSales(sale) {
+        try {
+            const response = await addNewSale(productionId, sale);
+            console.log(response);
+            loadProductions();
+
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
