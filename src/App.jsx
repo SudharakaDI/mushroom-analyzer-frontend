@@ -7,6 +7,7 @@ import Sales from "./pages/Sales.jsx";
 import Expense from "./pages/Expense.jsx";
 import Income from "./pages/Income.jsx";
 import {BrowserRouter, Route, Routes} from "react-router";
+import {Toaster} from "react-hot-toast";
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
                   </Routes>
 
           </main>
+          <Toaster/>
       </>
       </BrowserRouter>
   )

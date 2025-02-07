@@ -6,9 +6,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ProductionDialog from "./ProductionDialog.jsx";
 import {useState} from "react";
+import ExpenseDialogCapital from "./ExpenseDialogCapital.jsx";
 
-export default function PotStockCard({name, potCount, supplier}) {
+export default function PotStockCard({name, potCount, supplier, potStockId}) {
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
 
     const handleDialogOpen = () => {
         setDialogOpen(true);
@@ -16,6 +18,14 @@ export default function PotStockCard({name, potCount, supplier}) {
 
     const handleDialogClose = () => {
         setDialogOpen(false);
+    };
+
+    const handleExpenseDialogOpen = () => {
+        setExpenseDialogOpen(true);
+    };
+
+    const handleExpenseDialogClose = () => {
+        setExpenseDialogOpen(false);
     };
 
     return (
@@ -40,10 +50,11 @@ export default function PotStockCard({name, potCount, supplier}) {
                 </CardContent>
                 <CardActions>
                     <Button onClick={handleDialogOpen} size="medium">Add Production</Button>
-                    <Button size="medium">Add Expense</Button>
+                    <Button onClick={handleExpenseDialogOpen} size="medium">Add Expense</Button>
                 </CardActions>
             </Card>
-            <ProductionDialog  open={dialogOpen} onClose={handleDialogClose} />
+            <ProductionDialog  open={dialogOpen} onClose={handleDialogClose} potStockId={potStockId} />
+            <ExpenseDialogCapital open={expenseDialogOpen} onClose={handleExpenseDialogClose} potStockId={potStockId} />
         </div>
 
     );

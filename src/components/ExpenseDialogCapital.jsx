@@ -11,11 +11,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
-import {addNewOperationalExpense} from "../services/apiService.js";
+import {addNewCapitalExpense} from "../services/apiService.js";
 import toast from "react-hot-toast";
 
 
-export default function ExpenseDialog({open, onClose, salesId}) {
+export default function ExpenseDialogCapital({open, onClose, potStockId}) {
     const [selectedDate, setSelectedDate] = useState(null);
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(null);
@@ -23,7 +23,7 @@ export default function ExpenseDialog({open, onClose, salesId}) {
 
     async function addExpense(expense) {
         try {
-            const response = await addNewOperationalExpense(salesId, expense);
+            const response = await addNewCapitalExpense(potStockId, expense);
             console.log(response);
             toast.success("Expense Added");
 

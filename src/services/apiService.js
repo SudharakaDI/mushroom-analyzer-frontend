@@ -47,8 +47,18 @@ export const addNewOperationalExpense =  async (salesId, expense) => {
     return response.data;
 };
 
+export const addNewCapitalExpense =  async (potStockId, expense) => {
+    const response =  await backendClient.post(`/expense/capital/${potStockId}`,expense)
+    return response.data;
+};
+
 export const addNewSale =  async (productionId, sale) => {
-    const response =  await backendClient.post(`sales?productionId=${productionId}`,sale)
+    const response =  await backendClient.post(`/sales?productionId=${productionId}`,sale)
+    return response.data;
+};
+
+export const editSale =  async (salesId, sale) => {
+    const response =  await backendClient.put(`/sales/${salesId}`,sale)
     return response.data;
 };
 

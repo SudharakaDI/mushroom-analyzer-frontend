@@ -6,24 +6,21 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useState} from "react";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from "dayjs";
-import {addNewProduction} from "../services/apiService.js";
+import {editSale} from "../services/apiService.js";
 import toast from "react-hot-toast";
 
 
-export default function ProductionDialog({open, onClose, potStockId}) {
-    const [selectedDate, setSelectedDate] = useState(null);
+export default function SalesDialog({open, onClose, salesId, sellers, loadProductions}) {
+    const [selectedSeller, setSelectedSeller] = useState(null);
     const [noOfItems, setNoOfItems] = useState(null);
 
-    async function addProduction(production) {
+
+    async function handleUpdateSales(sales) {
         try {
-            const response = await addNewProduction(potStockId, production);
-            toast.success("Production Added");
+            const response = await editSale(salesId, sales);
             console.log(response);
+            toast.success("Sales Updated");
+            loadProductions();
 
         } catch (err) {
             console.log(err);
@@ -40,35 +37,44 @@ export default function ProductionDialog({open, onClose, potStockId}) {
                     component: 'form',
                     onSubmit: (event) => {
                         event.preventDefault();
-                        const formattedDate = selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null;
-                        console.log(formattedDate);
-                        const productionDetails = {
-                            productionDate: formattedDate,
-                            mushroomType: "OISTER",
-                            packetWeight: 0,
-                            packetPrice: 150,
-                            numberOfItems: noOfItems
+                        const incomeDetails = {
+                            numberOfItems: noOfItems,
+                            stakeHolderId: selectedSeller,
                         };
-                        addProduction(productionDetails);
+                        handleUpdateSales(incomeDetails);
                         onClose();
                     },
                 }}
             >
-                <DialogTitle>Add Production</DialogTitle>
+                <DialogTitle>Update Sales</DialogTitle>
                 <DialogContent>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={['DatePicker']}>
-                            <DatePicker value={selectedDate} label="Basic date picker" onChange={(date) => setSelectedDate(date)}  />
-                        </DemoContainer>
-                    </LocalizationProvider>
+                    <select
+                        value={selectedSeller || ""}
+                        onChange={(e) => setSelectedSeller(e.target.value)}
+                        style={{
+                            padding: '5px',
+                            flex: 1,
+                            border: '1px solid #ccc',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        <option value="" disabled>
+                            Select Seller
+                        </option>
+                        {sellers.map((seller) => (
+                            <option key={seller.id} value={seller.id}>
+                                {seller.name}
+                            </option>
+                        ))}
+                    </select>
                     <TextField
                         autoFocus
                         required
                         value={noOfItems}
                         margin="dense"
-                        id="noOfItems"
-                        name="noOfItems"
-                        label="Number of Items"
+                        id="amount"
+                        name="amount"
+                        label="Amount"
                         type="text"
                         onChange={(event) => {
                             setNoOfItems(event.target.value);

@@ -13,6 +13,8 @@ import {useState} from "react";
 import IncomeDialog from "./IncomeDialog.jsx";
 import ExpenseDialog from "./ExpenseDialog.jsx";
 import {addNewSale} from "../services/apiService.js";
+import SalesDialog from "./SalesDialog.jsx";
+import toast from "react-hot-toast";
 
 
 export default function SalesSubTable({sales, loadProductions, sellers, productionId}) {
@@ -20,9 +22,20 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
     const [selectedSeller, setSelectedSeller] = React.useState(null);
     const [newNumberOfItems, setNewNumberOfItems] = React.useState(null);
     const [selectedSalesId, setSelectedSalesId] = useState(null);
+    // const [selectedSalesItem, setSelectedSalesItem] = useState({});
     const [incomedialogOpen, setIncomedialogOpen] = useState(false);
     const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
+    const [salesDialogOpen, setSalesDialogOpen] = useState(false);
 
+    const handleSalesDialogOpen = (salesId) => {
+        setSelectedSalesId(salesId);
+        setSalesDialogOpen(true);
+    };
+
+
+    const handleSalesDialogClose = () => {
+        setSalesDialogOpen(false);
+    };
 
     const handleIncomeDialogOpen = (salesId) => {
         setSelectedSalesId(salesId);
@@ -46,6 +59,7 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
         try {
             const response = await addNewSale(productionId, sale);
             console.log(response);
+            toast.success("Sales Added");
             loadProductions();
 
         } catch (err) {
@@ -80,7 +94,7 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
                             <TableCell>
                                 <Button variant="outlined" startIcon={<DeleteIcon/>}>
                                 </Button>
-                                <Button variant="contained" endIcon={<EditIcon />}>
+                                <Button variant="contained" endIcon={<EditIcon />} onClick={() => handleSalesDialogOpen(salesRow.id)} >
                                 </Button>
                             </TableCell>
                         </TableRow>
@@ -139,6 +153,8 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
         </Box>
         <IncomeDialog open={incomedialogOpen} onClose={handleIncomeDialogClose}  salesId={selectedSalesId}/>
         <ExpenseDialog open={expenseDialogOpen} onClose={handleExpenseDialogClose} salesId={selectedSalesId} />
+        <SalesDialog open={salesDialogOpen} onClose={handleSalesDialogClose} salesId={selectedSalesId} sellers={sellers} loadProductions={loadProductions} />
+            {/*<SalesDialog open={salesDialogOpen} onClose={handleSalesDialogClose} salesItem={selectedSalesItem} sellers={sellers} loadProductions={loadProductions} />*/}
         </div>
 
     )

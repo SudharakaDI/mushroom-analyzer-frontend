@@ -26,7 +26,7 @@ function Home(){
             <Grid container spacing={2}>
                 {potStocks && potStocks.map((potStock) => (
                     <Grid key={potStock.id}>
-                        <PotStockCard name={potStock.mushroomType} potCount={potStock.numberOfPots} supplier={potStock.mushroomSupplier.name}/>
+                        <PotStockCard name={potStock.mushroomType} potCount={potStock.numberOfPots} supplier={potStock.mushroomSupplier.name} potStockId={potStock.id}/>
                     </Grid>
                 ))}
 

@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 import {addNewIncome} from "../services/apiService.js";
+import toast from "react-hot-toast";
 
 
 export default function IncomeDialog({open, onClose, salesId}) {
@@ -23,6 +24,7 @@ export default function IncomeDialog({open, onClose, salesId}) {
     async function addIncome(income) {
         try {
             const response = await addNewIncome(salesId, income);
+            toast.success("Income Added");
             console.log(response);
 
         } catch (err) {
