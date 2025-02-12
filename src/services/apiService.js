@@ -5,11 +5,20 @@ export const fetchPotStocks = async () => {
     return response.data;
 };
 
+export const fetchPotStocksMinimal = async () => {
+    const response = await backendClient.get("/pot-stock/minimal")
+    return response.data;
+};
+
 export const fetchProductions =  async () => {
     const response =  await backendClient.get("/production")
     return response.data;
 };
 
+export const fetchProductionsFromPotStock =  async (potStockId) => {
+    const response =  await backendClient.get(`pot-stock/production/${potStockId}`)
+    return response.data;
+};
 
 export const fetchSales =  async () => {
     const response =  await backendClient.get("/sales")

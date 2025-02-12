@@ -1,31 +1,56 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+
 import '../css/Production.css';
 import {useEffect, useState} from "react";
-import axios from "axios";
 import ExpandableProductionTable from "../components/ExpandableProductionTable.jsx";
+import {fetchPotStocksMinimal} from "../services/apiService.js";
 
-const baseURL = "http://localhost:8080/mushroom-analyzer/backend/api/v1/production";
 
 function Production() {
-
-    const [production, setProduction] = useState([]);
+    const [potStocks, setPotStocks] = useState([]);
+    const [selectedPotStock, setSelectedPotStock] = useState(null)
 
     useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setProduction(response.data);
-        })
+        const loadPotStocks = async () => {
+            try {
+                const potStocks = await fetchPotStocksMinimal();
+                setPotStocks((prev) => {
+                    if (potStocks.length > 0) {
+                        setSelectedPotStock(potStocks[0].id);
+                    }
+                    return potStocks;
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadPotStocks();
+
     },[]);
+
 
     return (
         <div className="production">
+            <select
+                value={selectedPotStock || ""}
+                onChange={(e) => setSelectedPotStock(e.target.value)}
+                style={{
+                    padding: '5px',
+                    flex: 1,
+                    border: '1px solid #ccc',
+                    borderRadius: '5px',
+                }}
+            >
+                <option value="" disabled>
+                    Select Pot Stock
+                </option>
+                {potStocks.map((potStock) => (
+                    <option key={potStock.id} value={potStock.id}>
+                        {potStock.description}
+                    </option>
+                ))}
+            </select>
             <h1>Productions</h1>
-            <ExpandableProductionTable/>
+            <ExpandableProductionTable potStockId={selectedPotStock}/>
         </div>
 
     )

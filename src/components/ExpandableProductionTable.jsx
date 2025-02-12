@@ -7,29 +7,41 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {useEffect, useState} from "react";
 import Row from './ExpandableProductionTableRow.jsx';
-import { fetchProductions, fetchSellers} from "../services/apiService.js";
+import {
+    fetchProductionsFromPotStock,
+    fetchSellers
+} from "../services/apiService.js";
 import {TablePagination} from "@mui/material";
 
-export default function ExpandableProductionTable() {
+export default function ExpandableProductionTable({potStockId}) {
 
     const [productions, setProductions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [page, setPage] = useState(0);
-    const rowsPerPage = 6
+    const rowsPerPage = 5
 
 
     useEffect(() => {
         loadProductions();
-    },[]);
+    },[potStockId]);
 
     useEffect(() => {
         loadSellers();
     },[]);
 
+    // const loadProductions = async () => {
+    //     const data = await fetchProductions();
+    //     setProductions(data);
+    // }
     const loadProductions = async () => {
-        const data = await fetchProductions();
-        setProductions(data);
+        try {
+            const productions = await fetchProductionsFromPotStock(potStockId);
+            setProductions(productions);
+        } catch (err) {
+            console.log(err);
+        }
     }
+
 
     const loadSellers = async () => {
         const data = await fetchSellers();
@@ -67,7 +79,7 @@ export default function ExpandableProductionTable() {
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={productions.length}
-                rowsPerPage={15}
+                rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
 
