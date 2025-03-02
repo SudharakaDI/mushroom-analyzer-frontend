@@ -5,25 +5,45 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
-import {addNewIncome} from "../services/apiService.js";
+import {addNewIncome, fetchPotStocksMinimal} from "../services/apiService.js";
 import toast from "react-hot-toast";
 
 
-export default function IncomeDialog({open, onClose, salesId}) {
+export default function IncomeDialog({open, onClose}) {
     const [selectedDate, setSelectedDate] = useState(null);
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(null);
+    const [potStocks, setPotStocks] = useState([]);
+    const [selectedPotStock, setSelectedPotStock] = useState(null)
+
+    useEffect(() => {
+        const loadPotStocks = async () => {
+            try {
+                const potStocks = await fetchPotStocksMinimal();
+                setPotStocks((prev) => {
+                    if (potStocks.length > 0) {
+                        setSelectedPotStock(potStocks[0].id);
+                    }
+                    return potStocks;
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadPotStocks();
+
+    },[]);
 
 
     async function addIncome(income) {
         try {
-            const response = await addNewIncome(salesId, income);
+            const response = await addNewIncome(selectedPotStock, income);
             toast.success("Income Added");
             console.log(response);
 
@@ -56,9 +76,29 @@ export default function IncomeDialog({open, onClose, salesId}) {
             >
                 <DialogTitle>Add Income</DialogTitle>
                 <DialogContent>
+                    <select
+                        value={selectedPotStock || ""}
+                        onChange={(e) => setSelectedPotStock(e.target.value)}
+                        style={{
+                            padding: '5px',
+                            flex: 1,
+                            border: '1px solid #ccc',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        <option value="" disabled>
+                            Select Pot Stock
+                        </option>
+                        {potStocks.map((potStock) => (
+                            <option key={potStock.id} value={potStock.id}>
+                                {potStock.description}
+                            </option>
+                        ))}
+                    </select>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker']}>
-                            <DatePicker value={selectedDate} label="Basic date picker" onChange={(date) => setSelectedDate(date)}  />
+                            <DatePicker value={selectedDate} label="Basic date picker"
+                                        onChange={(date) => setSelectedDate(date)}/>
                         </DemoContainer>
                     </LocalizationProvider>
                     <TextField

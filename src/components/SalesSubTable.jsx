@@ -22,7 +22,6 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
     const [selectedSeller, setSelectedSeller] = React.useState(null);
     const [newNumberOfItems, setNewNumberOfItems] = React.useState(null);
     const [selectedSalesId, setSelectedSalesId] = useState(null);
-    // const [selectedSalesItem, setSelectedSalesItem] = useState({});
     const [incomedialogOpen, setIncomedialogOpen] = useState(false);
     const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
     const [salesDialogOpen, setSalesDialogOpen] = useState(false);
@@ -87,10 +86,10 @@ export default function SalesSubTable({sales, loadProductions, sellers, producti
                                 {salesRow.seller.name}
                             </TableCell>
                             <TableCell>{salesRow.numberOfItems}</TableCell>
-                            <TableCell>
-                                <Button variant="contained" onClick={() => handleIncomeDialogOpen(salesRow.id)}>Add Income</Button>
-                                <Button variant="contained" onClick={() => handleExpenseDialogOpen(salesRow.id)}>Add Expense</Button>
-                            </TableCell>
+                            {/*<TableCell>*/}
+                            {/*    <Button variant="contained" onClick={() => handleIncomeDialogOpen(salesRow.id)}>Add Income</Button>*/}
+                            {/*    <Button variant="contained" onClick={() => handleExpenseDialogOpen(salesRow.id)}>Add Expense</Button>*/}
+                            {/*</TableCell>*/}
                             <TableCell>
                                 <Button variant="outlined" startIcon={<DeleteIcon/>}>
                                 </Button>

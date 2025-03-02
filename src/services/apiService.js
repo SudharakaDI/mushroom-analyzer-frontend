@@ -46,8 +46,8 @@ export const addNewProduction =  async (potStockId, production) => {
     return response.data;
 };
 
-export const addNewIncome =  async (salesId, income) => {
-    const response =  await backendClient.post(`/income?salesId=${salesId}`,income)
+export const addNewIncome =  async (potStockId, income) => {
+    const response =  await backendClient.post(`/income?potStockId=${potStockId}`,income)
     return response.data;
 };
 
@@ -58,6 +58,11 @@ export const addNewOperationalExpense =  async (salesId, expense) => {
 
 export const addNewCapitalExpense =  async (potStockId, expense) => {
     const response =  await backendClient.post(`/expense/capital/${potStockId}`,expense)
+    return response.data;
+};
+
+export const addNewExpense =  async (potStockId, expense) => {
+    const response =  await backendClient.post(`/expense/${potStockId}`,expense)
     return response.data;
 };
 

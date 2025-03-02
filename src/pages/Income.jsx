@@ -8,10 +8,17 @@ import Paper from '@mui/material/Paper';
 import '../css/Income.css';
 import {useEffect, useState} from "react";
 import {fetchIncomes,} from "../services/apiService.js";
+import IncomeDialog from "../components/IncomeDialog.jsx";
+import * as React from "react";
+import Button from "@mui/material/Button";
 
 function Income() {
     
     const [income, setIncome] = useState([]);
+    const [selectedPotStockId, setSelectedPotStockId] = useState(null);
+    const [incomedialogOpen, setIncomedialogOpen] = useState(false);
+
+
 
     useEffect( () => {
         const loadIncome = async () => {
@@ -25,9 +32,18 @@ function Income() {
         loadIncome();
     },[]);
 
+    const handleIncomeDialogOpen = () => {
+        setIncomedialogOpen(true);
+    };
+
+    const handleIncomeDialogClose = () => {
+        setIncomedialogOpen(false);
+    };
+
     return (
         <div className="income">
             <h1>Income</h1>
+            <Button variant="contained" onClick={() => handleIncomeDialogOpen()}>Add Income</Button>
             <TableContainer component={Paper} className="income-table">
                 <Table sx={{ minWidth:200 }} size="small" aria-label="a dense table">
                     <TableHead>
@@ -50,6 +66,7 @@ function Income() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <IncomeDialog open={incomedialogOpen} onClose={handleIncomeDialogClose}/>
         </div>
 
     )

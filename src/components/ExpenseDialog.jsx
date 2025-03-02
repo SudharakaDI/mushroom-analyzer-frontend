@@ -5,25 +5,49 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
-import {addNewOperationalExpense} from "../services/apiService.js";
+import {addNewExpense, addNewOperationalExpense, fetchPotStocksMinimal} from "../services/apiService.js";
 import toast from "react-hot-toast";
 
 
-export default function ExpenseDialog({open, onClose, salesId}) {
+export default function ExpenseDialog({open, onClose}) {
+    const expenseTypes = ['OPERATIONAL', 'CAPITAL']
     const [selectedDate, setSelectedDate] = useState(null);
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState(null);
+    const [potStocks, setPotStocks] = useState([]);
+    const [selectedPotStock, setSelectedPotStock] = useState(null);
+    const [selectedExpenseType, setSelectedExpenseType] = useState('OPERATIONAL');
+
+
+    useEffect(() => {
+        const loadPotStocks = async () => {
+            try {
+                const potStocks = await fetchPotStocksMinimal();
+                setPotStocks((prev) => {
+                    if (potStocks.length > 0) {
+                        setSelectedPotStock(potStocks[0].id);
+                    }
+                    return potStocks;
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        loadPotStocks();
+
+    },[]);
+
 
 
     async function addExpense(expense) {
         try {
-            const response = await addNewOperationalExpense(salesId, expense);
+            const response = await addNewExpense(selectedPotStock, expense);
             console.log(response);
             toast.success("Expense Added");
 
@@ -48,6 +72,7 @@ export default function ExpenseDialog({open, onClose, salesId}) {
                             date: formattedDate,
                             amount: amount,
                             description: description,
+                            expenseType: selectedExpenseType
                         };
                         addExpense(expenseDetails);
                         onClose();
@@ -56,9 +81,48 @@ export default function ExpenseDialog({open, onClose, salesId}) {
             >
                 <DialogTitle>Add Expense</DialogTitle>
                 <DialogContent>
+                    <select
+                        value={selectedPotStock || ""}
+                        onChange={(e) => setSelectedPotStock(e.target.value)}
+                        style={{
+                            padding: '5px',
+                            flex: 1,
+                            border: '1px solid #ccc',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        <option value="" disabled>
+                            Select Pot Stock
+                        </option>
+                        {potStocks.map((potStock) => (
+                            <option key={potStock.id} value={potStock.id}>
+                                {potStock.description}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        value={selectedExpenseType}
+                        onChange={(e) => setSelectedExpenseType(e.target.value)}
+                        style={{
+                            padding: '5px',
+                            flex: 1,
+                            border: '1px solid #ccc',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        <option value="" disabled>
+                            Select Expense Type
+                        </option>
+                        {expenseTypes.map((expenseType) => (
+                            <option key={expenseType} value={expenseType}>
+                                {expenseType}
+                            </option>
+                        ))}
+                    </select>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker']}>
-                            <DatePicker value={selectedDate} label="Basic date picker" onChange={(date) => setSelectedDate(date)}  />
+                            <DatePicker value={selectedDate} label="Basic date picker"
+                                        onChange={(date) => setSelectedDate(date)}/>
                         </DemoContainer>
                     </LocalizationProvider>
                     <TextField
